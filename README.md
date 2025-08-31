@@ -6,23 +6,8 @@ Two buildings are separated by an alley. Two ladders are placed so that the base
 
 Diagram (not to scale):
 
-```
-   Wall 1                          Wall 2
-     |                               |
-     |           /L1 (to top of      |
-     |          /   Wall 2)          |
-     |         /                     |
-     |        /                      |
- y2  |_______/__________   <- L1 top | y1
-     |     /  (x,h)  \              /
-     |    /     *     \            /
-     |   /             \          /
-     |  /               \        /
-     | /                 \      /
-     |/                   \    /
-     *---------------------\--/  <- ground (y=0)
-     0        x            w
-```
+![Two ladders in an alley](TwoLadders.png)
+
 
 Legend and coordinates:
 - Left wall is at `x = 0`, ground at `y = 0`.
