@@ -18,3 +18,23 @@ Legend and coordinates:
 - Unknown: the alley width `w`.
 
 (You may use these coordinates and lengths to set up the geometric equations to solve for `w`.)
+
+
+## The approach you must follow
+
+  * Derive an algebraic equation which `w` must satify (e.g., quadratic, cubic,
+  quartic).
+  
+  * Implement a solver for algebraic equations of the type you derived,
+  Covering linear, quadratic, cubic and quartic equations.
+
+  * The solveru must not use iteration, but must use a solution
+  in radicals. 
+  
+  * Create a test suite for the solve which will run by runnint `pytest`
+  in the top folder of the repository.
+  
+
+  
+  
+
