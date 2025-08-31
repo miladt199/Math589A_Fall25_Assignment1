@@ -28,13 +28,16 @@ Legend and coordinates:
   * Implement a solver for algebraic equations of the type you derived,
   Covering linear, quadratic, cubic and quartic equations.
 
-  * The solveru must not use iteration, but must use a solution
+  * Your solver must not use iteration, but must use a solution
   in radicals. 
   
   * Create a test suite for the solve which will run by runnint `pytest`
   in the top folder of the repository.
   
+## Startup code
 
+  * Files <cubic_solver.py> and <quartic_solver.py> containing
+  the signatures and rudimentary code for the tasks at hand.
   
   
 
