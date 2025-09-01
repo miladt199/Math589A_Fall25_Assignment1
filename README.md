@@ -49,7 +49,7 @@ Legend and coordinates:
   imaginary rotation.
 
 
-  * Create a test suite for the solve which will run by runnint `pytest`
+  * Create a test suite for the solve which will run by running `pytest`
   in the top folder of the repository.
   
 ## Startup code
