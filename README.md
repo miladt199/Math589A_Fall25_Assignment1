@@ -32,7 +32,7 @@ Legend and coordinates:
   Instead, it must use trigonometric or hyperbolic function substitution.
   
   Example: There is a trigonometric identity:
-  $$ \cos 2\alpha = 2\cos^2 \alpha- 1$$
+  $ \cos 2\alpha = 2\cos^2 \alpha- 1 $
 
   
   * Create a test suite for the solve which will run by runnint `pytest`
