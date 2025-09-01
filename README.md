@@ -25,6 +25,7 @@ Legend and coordinates:
 
 
 ## Background
+
 This problem is described in detail in Chapter 3x of the 'numbook'.
 Also, Exercise 3.23 and its solution in the Appendix R provide some hints.
 
