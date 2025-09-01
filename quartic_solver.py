@@ -1,6 +1,6 @@
 import numpy as np
 
-def solve_quartic(a, b, c, d, e):
+def solve_quartic(a, b, c, d, e, tol=1e-14):
     """Solve a*x^4 + b*x^3 + c*x^2 + d*x + e = 0.
     Returns a list of 1..4 roots (real numbers or complex numbers).
     If the leading coefficients are (near) zero the function will
