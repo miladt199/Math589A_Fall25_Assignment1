@@ -2,7 +2,11 @@
 
 ## The Modified Two-Ladder Problem
 
-Two buildings are separated by an alley. Two ladders are placed so that the base of each ladder is against one of the buildings and reaches the top of the other building. The two ladders are `L1 = 40 ft` and `L2 = 30 ft` long. They cross at a point `h = 10 ft` above the ground. How wide is the alley (find `w`)?
+Two buildings are separated by an alley. Two ladders are placed so
+that the base of each ladder is against one of the buildings and
+reaches the top of the other building. The two ladders are `L1 = 40
+ft` and `L2 = 30 ft` long. They cross at a point `h = 10 ft` above the
+ground. How wide is the alley (find `w`)?
 
 Diagram (not to scale):
 
