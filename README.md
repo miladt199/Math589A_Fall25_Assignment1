@@ -24,6 +24,11 @@ Legend and coordinates:
 (You may use these coordinates and lengths to set up the geometric equations to solve for `w`.)
 
 
+## Background
+This problem is described in detail in Chapter 3x of the 'numbook'.
+Also, Exercise 3.23 and its solution in the Appendix R provide some hints.
+
+
 ## The approach you must follow
 
   * Derive an algebraic equation which `w` must satify (e.g., quadratic, cubic,
