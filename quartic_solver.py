@@ -3,9 +3,8 @@ import numpy as np
 def solve_quartic(a, b, c, d, e):
     """Solve a*x^4 + b*x^3 + c*x^2 + d*x + e = 0.
     Returns a list of 1..4 roots (real numbers or complex numbers).
-    If the leading coefficients are (near) zero the function will
+    If the leading coefficients are zero the function will
     handle lower-degree polynomials automatically.
-    tol: tolerance for treating small coefficients/imaginary parts as zero.
     """
     roots = []
 
