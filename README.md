@@ -82,8 +82,12 @@ Also, Exercise 3.23 and its solution in the Appendix R provide some hints.
   arithmetic that the roots are real.
   
 ## Submission
-  * Your submission should be a GitHub or another repository supported
-  by Gradescope.
+
+  *
+  * Your submission should be a submission of a complete
+  GitHub or another repository supported  by Gradescope. Do not
+  submit individual files or Zip archive of your repository.
+
   * As the first step you should clone this repository.
   * You must provide unit tests
 
