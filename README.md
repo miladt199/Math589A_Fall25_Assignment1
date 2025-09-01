@@ -83,7 +83,10 @@ Also, Exercise 3.23 and its solution in the Appendix R provide some hints.
   
 ## Submission
 
-  *
+  * Gradescope assignment 'Programming Assignment 1' was 
+  created to accept your submission. Use your favorite avatar name
+  for the Leaderboard!
+  
   * Your submission should be a submission of a complete
   GitHub or another repository supported  by Gradescope. Do not
   submit individual files or Zip archive of your repository.
