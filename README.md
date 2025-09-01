@@ -44,7 +44,7 @@ Legend and coordinates:
   `2*y**2-1=c` and then use the substitution `y=cos(alpha)`. Thus
   `cos(2*alpha)=c`. Then `2*alpha=acos(c)` and we find `alpha`.
   This works if `|c|<1`. For `|c|>1` we use hyperbolic
-  functions. The identity is `cosh(2*u) = 2*cosh(u)^2-1`.
+  functions. The identity is `cosh(2*u) = 2*cosh(u)**2-1`.
   After all, `cosh` and `cos` are the same function, subject to
   imaginary rotation.
 
