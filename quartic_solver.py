@@ -7,7 +7,6 @@ def solve_quartic(a, b, c, d, e, tol=1e-14):
     handle lower-degree polynomials automatically.
     tol: tolerance for treating small coefficients/imaginary parts as zero.
     """
-    coeffs = [a, b, c, d, e]
     roots = []
 
     # ################################################################
