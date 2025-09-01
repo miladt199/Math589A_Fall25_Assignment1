@@ -38,7 +38,7 @@ Legend and coordinates:
   * Your solver must not use iteration, and must not use radicals.
   Instead, it must use trigonometric or hyperbolic function substitution.
   
-  **Example**: There is a trigonometric identity:
+  * **Example**: There is a trigonometric identity:
   `cos(alpha) = 2*cos(alpha)**2-1` allows one to solve all quadratic
   equations. First, we transform the equation to the form
   `2*y**2-1=c` and then use the substitution `y=cos(alpha)`. Thus
