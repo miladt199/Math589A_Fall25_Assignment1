@@ -49,6 +49,10 @@ Legend and coordinates:
   imaginary rotation.
 
 
+  * Reduce a quartic equation to a cubic by constructing the
+  "resolvent cubic". See the article [Resolvent  cubic](https://en.wikipedia.org/wiki/Resolvent_cubic) on Wikipedia.
+
+
   * Create a test suite for the solve which will run by running `pytest`
   in the top folder of the repository.
   
