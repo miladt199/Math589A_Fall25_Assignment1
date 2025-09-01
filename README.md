@@ -73,10 +73,7 @@ Also, Exercise 3.23 and its solution in the Appendix R provide some hints.
 
   * You must expand the code in [quartic_solver.py](quartic_solver.py) 
   so that it solves algebraic equations up to degree 4, with lower degrees
-  covered as degenerate cases. This approach is illustrated
-  in the file [cubic_solver.py](cubic_solver.py), where the hypothetical
-  solver also handles linear and quadratic equations.
+  covered as degenerate cases.
   
-  * Yous solver should clean roots with tiny imaginary parts (< 1e-12) 
-  to become real.
+  
   
