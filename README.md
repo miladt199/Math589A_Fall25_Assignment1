@@ -88,7 +88,7 @@ Also, Exercise 3.23 and its solution in the Appendix R provide some hints.
   for the Leaderboard!
   
   * Your submission should be a submission of a complete
-  GitHub or another repository supported  by Gradescope. Do not
+  GitHub or BitBucket repository, supported by Gradescope. Do not
   submit individual files or Zip archive of your repository.
 
   * As the first step you should clone this repository.
