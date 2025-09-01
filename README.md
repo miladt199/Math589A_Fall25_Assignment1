@@ -84,6 +84,13 @@ Also, Exercise 3.23 and its solution in the Appendix R provide some hints.
 ## Submission
   * Your submission should be a GitHub or another repository supported
   by Gradescope.
+  * As the first step you should clone this repository.
+  * You must provide unit tests
+
+## Grading
+  * Grades will be assigned by an autograder
+  * Your quartic equation solver will be tested on various
+  examples of quartic and cubic equations.
 
 
 
