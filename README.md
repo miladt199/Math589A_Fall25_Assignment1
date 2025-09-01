@@ -36,8 +36,8 @@ Legend and coordinates:
   
 ## Startup code
 
-  * Files (cubic_solver.py)[cubic_solver.py] and
-  (quartic_solver.py)[quartic_solver.py] containing the signatures and
+  * Files [cubic_solver.py](cubic_solver.py) and
+  [quartic_solver.py](quartic_solver.py) containing the signatures and
   rudimentary code for the tasks at hand.
   
   
