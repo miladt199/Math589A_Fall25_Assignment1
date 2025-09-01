@@ -100,9 +100,9 @@ Also, Exercise 3.23 and its solution in the Appendix R provide some hints.
   examples of quartic and cubic equations.
 
 ## About the autograder platform
+
   * Your code will run in a virtual machine running Ubuntu 22.04 operating
   system, with a limited Python installation. Thus, only some Python packages
   will be available (math, cmath)
-
   * The machine will have 0.5 CPU, 0.75GB RAM
   * The time limit is 10 minutes
