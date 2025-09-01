@@ -28,8 +28,12 @@ Legend and coordinates:
   * Implement a solver for algebraic equations of the type you derived,
   Covering linear, quadratic, cubic and quartic equations.
 
-  * Your solver must not use iteration, but must use a solution
-  in radicals. 
+  * Your solver must not use iteration, and must not use radicals.
+  Instead, it must use trigonometric or hyperbolic function substitution.
+  
+  Example: There is a trigonometric identity:
+  $$ \cos 2\alpha = 2\cos^2 \alpha- 1$$
+
   
   * Create a test suite for the solve which will run by runnint `pytest`
   in the top folder of the repository.
@@ -41,4 +45,14 @@ Legend and coordinates:
   rudimentary code for the tasks at hand.
   
   
+## Requirements
 
+  * You must expand the code in [quartic_solver.py](quartic_solver.py) 
+  so that it solves algebraic equations up to degree 4, with lower degrees
+  covered as degenerate cases. This approach is illustrated
+  in the file [cubic_solver.py](cubic_solver.py), where the hypothetical
+  solver also handles linear and quadratic equations.
+  
+  * Yous solver should clean roots with tiny imaginary parts (< 1e-12) 
+  to become real.
+  
