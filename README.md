@@ -80,6 +80,11 @@ Also, Exercise 3.23 and its solution in the Appendix R provide some hints.
   * Complex roots must be handled. By the nature of the algorithm, no
   "imaginary noise" must not occur when it can be shown by machine
   arithmetic that the roots are real.
+  
+## Submission
+  * Your submission should be a GitHub or another repository supported
+  by Gradescope.
+
 
 
   
