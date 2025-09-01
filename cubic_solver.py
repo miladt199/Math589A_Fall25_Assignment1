@@ -1,6 +1,6 @@
 import math, cmath
 
-def solve_cubic(a, b, c, d, tol=1e-14):
+def solve_cubic(a, b, c, d):
     """Solve a*x^3 + b*x^2 + c*x + d = 0
     Returns list of 1..3 roots (complex if needed).
     """
