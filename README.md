@@ -27,7 +27,10 @@ Legend and coordinates:
 ## The approach you must follow
 
   * Derive an algebraic equation which `w` must satify (e.g., quadratic, cubic,
-  quartic).
+  quartic). The 'numbook' explains how to do this, eventually reducing
+  the problem to the following equation: `1/\sqrt(a-x) + 1/sqrt(b-x) = 1`.
+  Exercise 3.23 and its solution contain the quartic equation which
+  `x` satisfies.
   
   * Implement a solver for algebraic equations of the type you derived,
   Covering linear, quadratic, cubic and quartic equations.
@@ -35,10 +38,12 @@ Legend and coordinates:
   * Your solver must not use iteration, and must not use radicals.
   Instead, it must use trigonometric or hyperbolic function substitution.
   
-  Example: There is a trigonometric identity:
-  $ \cos 2\alpha = 2\cos^2 \alpha- 1 $
+  **Example**: There is a trigonometric identity:
+  `cos(alpha) = 2*cos(alpha)**2-1` allows one to solve all quadratic
+  equations. First, we transform the equation to the form
+  `2*y**2-1=c` and then use the substitution `y=cos(alpha)`. Thus
+  `cos(2*alpha)=c`. Then `2*alpha=acos(c)` and we find `alpha`.
 
-  
   * Create a test suite for the solve which will run by runnint `pytest`
   in the top folder of the repository.
   
