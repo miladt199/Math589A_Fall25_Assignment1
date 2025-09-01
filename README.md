@@ -75,5 +75,13 @@ Also, Exercise 3.23 and its solution in the Appendix R provide some hints.
   so that it solves algebraic equations up to degree 4, with lower degrees
   covered as degenerate cases.
   
+  * If there are multiple roots, they should appear repeated.
   
+  * Complex roots must be handled. By the nature of the algorithm, no
+  "imaginary noise" must not occur when it can be shown by machine
+  arithmetic that the roots are real.
+
+
+  
+
   
