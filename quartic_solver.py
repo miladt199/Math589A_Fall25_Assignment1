@@ -64,12 +64,11 @@ def solve_cubic(a, b, c, d):
     else:
         # Three real roots (casus irreducibilis): trigonometric form
         # r = sqrt(-p/3)  -> compute without sqrt()
-        rp = (-p/3.0).real
+        rp = -p/3.0
         # rp > 0 in this branch
         r = math.exp(0.5 * math.log(rp))
-        r3 = r * r * r
-        arg = (q.real) / (2.0 * r3) if r3 != 0.0 else 1.0
-        arg = max(-1.0, min(1.0, arg))
+        arg = (-half_q) / (r**3)
+        arg = max(-1.0, min(1.0, arg))  # clamp
         theta = math.acos(arg)
         t1 = 2*r*math.cos(theta/3.0)
         t2 = 2*r*math.cos((theta+2*math.pi)/3.0)
@@ -124,7 +123,7 @@ def solve_quartic(a, b, c, d, e):
     # Choose m (prefer real) with 2m - p >= 0
     m = None
     for mr in m_roots:
-        if abs(mr.imag) <= 1e-10 and (2.0*mr.real - p.real) >= -1e-10:
+        if abs(mr.imag) <= 1e-10 and (2.0*mr.real - p) >= -1e-10:
             m = mr.real
             break
     if m is None:
