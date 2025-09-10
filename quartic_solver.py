@@ -1,5 +1,7 @@
 import math, cmath
 
+SQRT3_OVER_2 = 0.8660254037844386467637231707529361834714026269051903140279034897  # sqrt(3)/2
+
 def _is_close(a, b, tol=1e-12):
     return abs(a - b) <= tol
 
@@ -54,8 +56,8 @@ def solve_cubic(a, b, c, d):
         u = _third_power(-half_q + sdisc)
         v = _third_power(-half_q - sdisc)
         t1 = u + v
-        w  = complex(-0.5,  math.sqrt(3)/2)
-        w2 = complex(-0.5, -math.sqrt(3)/2)
+        w  = complex(-0.5,  SQRT3_OVER_2)
+        w2 = complex(-0.5, -SQRT3_OVER_2)
         t2 = u*w  + v*w2
         t3 = u*w2 + v*w
         ts = [t1, t2, t3]
