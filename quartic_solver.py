@@ -6,13 +6,13 @@ def _is_close(a, b, tol=1e-12):
     return abs(a - b) <= tol
 
 def _half_power(z):
-    # principal "square root": exp( (1/2) log z )  (no sqrt/**0.5)
+    # principal "square root": exp( (1/2) log z )
     if z == 0:
         return 0j
     return cmath.exp(0.5 * cmath.log(z))
 
 def _third_power(z):
-    # principal "cube root": exp( (1/3) log z )  (no **(1/3))
+    # principal "cube root": exp( (1/3) log z ), with zero guard
     if z == 0:
         return 0j
     return cmath.exp(cmath.log(z) / 3.0)
@@ -50,7 +50,6 @@ def solve_cubic(a, b, c, d):
         else:
             u = _third_power(-half_q)
             ts = [2*u, -u, -u]
-
     elif disc > 0:
         # One real, two complex: Cardano via exp(log)/3 (no **(1/3))
         sdisc = _half_power(disc)
@@ -62,22 +61,14 @@ def solve_cubic(a, b, c, d):
         t2 = u*w  + v*w2
         t3 = u*w2 + v*w
         ts = [t1, t2, t3]
-
     else:
         # Three real roots (casus irreducibilis): trigonometric form
-        # r = sqrt(-p/3) computed without sqrt(); guard tiny negatives
+        # r = sqrt(-p/3)  -> compute without sqrt()
         rp = -p/3.0
-        if rp <= 0:
-            rp = max(rp, 1e-30)
+        # rp > 0 in this branch
         r = math.exp(0.5 * math.log(rp))
-
-        # Correct identity for depressed cubic: cos(3θ) = q / (2 r^3)
-        r3 = r * r * r
-        arg = q / (2.0 * r3) if r3 != 0.0 else 1.0
-        # Clamp to [-1, 1] for numerical safety
-        if arg > 1.0: arg = 1.0
-        if arg < -1.0: arg = -1.0
-
+        arg = (-half_q) / (r**3)
+        arg = max(-1.0, min(1.0, arg))  # clamp
         theta = math.acos(arg)
         t1 = 2*r*math.cos(theta/3.0)
         t2 = 2*r*math.cos((theta+2*math.pi)/3.0)
@@ -157,6 +148,7 @@ def solve_quartic(a, b, c, d, e):
     y4 = 0.5*(-R - D2)
 
     roots = [y1 - alpha, y2 - alpha, y3 - alpha, y4 - alpha]
+    # Sample return statement
     return roots
 
 
