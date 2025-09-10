@@ -64,20 +64,11 @@ def solve_cubic(a, b, c, d):
     else:
         # Three real roots (casus irreducibilis): trigonometric form
         # r = sqrt(-p/3)  -> compute without sqrt()
-        rp = -p / 3.0
-        if rp <= 0:
-            rp = max(rp, 1e-30)  # tiny nudge for round-off
+        rp = -p/3.0
+        # rp > 0 in this branch
         r = math.exp(0.5 * math.log(rp))
-        r3 = r * r * r
-
-        if r3 <= 1e-300:  # ultra-defensive; should not happen for Δ<0
-            arg = 1.0 if q.real >= 0 else -1.0
-        else:
-            arg = q.real / (2.0 * r3)
-
-        # Clamp to domain
-        if arg > 1.0: arg = 1.0
-        if arg < -1.0: arg = -1.0
+        arg = (-half_q) / (r**3)
+        arg = max(-1.0, min(1.0, arg))  # clamp
         theta = math.acos(arg)
         t1 = 2*r*math.cos(theta/3.0)
         t2 = 2*r*math.cos((theta+2*math.pi)/3.0)
