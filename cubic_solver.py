@@ -71,7 +71,7 @@ def solve_cubic(a, b, c, d):
 
     else:  # three real roots (casus irreducibilis): trigonometric form
         # r = sqrt(-p/3) computed without sqrt(); guard tiny negatives
-        rp = (-p/3.0).real
+        rp = -p/3.0
         if rp <= 0:
             # due to round-off, nudge to small positive (Δ<0 implies rp>0 ideally)
             rp = max(rp, 1e-30)
