@@ -1,5 +1,6 @@
 import math, cmath
 
+# constants (avoid math.sqrt usage)
 SQRT3_OVER_2 = 0.8660254037844386467637231707529361834714026269051903140279034897  # sqrt(3)/2
 
 def _half_power(z):
@@ -57,7 +58,7 @@ def solve_cubic(a, b, c, d):
             t2 = -u
             roots = [t1, t2, t2]
 
-    elif disc > 0:  # one real + two complex
+    elif disc > 0:  # one real + two complex (Cardano)
         sdisc = _half_power(disc)  # no sqrt()
         u = _third_power(-half_q + sdisc)
         v = _third_power(-half_q - sdisc)
@@ -69,18 +70,28 @@ def solve_cubic(a, b, c, d):
         roots = [t1, t2, t3]
 
     else:  # three real roots (casus irreducibilis): trigonometric form
-        # r = sqrt(-p/3) but computed without sqrt()
+        # r = sqrt(-p/3) computed without sqrt(); guard tiny negatives
         rp = -p/3.0
-        # rp > 0 here; principal "sqrt" via exp(log)/2
-        r = math.exp(0.5 * math.log(rp)) if rp > 0 else 0.0
-        arg = (-half_q) / (r**3 if r != 0 else float('inf'))
-        # Clamp for numerical safety
-        arg = max(-1.0, min(1.0, arg))
-        theta = math.acos(arg)
-        t1 = 2*r*math.cos(theta/3.0)
-        t2 = 2*r*math.cos((theta + 2*math.pi)/3.0)
-        t3 = 2*r*math.cos((theta + 4*math.pi)/3.0)
-        roots = [t1, t2, t3]
+        if rp <= 0:
+            # due to round-off, nudge to small positive (Δ<0 implies rp>0 ideally)
+            rp = max(rp, 1e-30)
+        r = math.exp(0.5 * math.log(rp))
+
+        # Correct argument: cos(3θ) = q / (2 r^3)
+        r3 = r * r * r
+        if r3 == 0.0:
+            # fallback (shouldn't happen for Δ<0)
+            roots = [0.0, 0.0, 0.0]
+        else:
+            arg = q / (2.0 * r3)
+            # Clamp to [-1, 1] for numerical safety
+            if arg > 1.0: arg = 1.0
+            if arg < -1.0: arg = -1.0
+            theta = math.acos(arg)
+            t1 = 2*r*math.cos(theta/3.0)
+            t2 = 2*r*math.cos((theta + 2*math.pi)/3.0)
+            t3 = 2*r*math.cos((theta + 4*math.pi)/3.0)
+            roots = [t1, t2, t3]
 
     # Shift back: x = t - A/3
     return [t - shift for t in roots]
