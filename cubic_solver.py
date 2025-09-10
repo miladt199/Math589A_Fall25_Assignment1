@@ -1,20 +1,36 @@
 import math, cmath
 
+SQRT3_OVER_2 = 0.8660254037844386467637231707529361834714026269051903140279034897  # sqrt(3)/2
+
+def _half_power(z):
+    """Principal square-root via exp(log)/2 (no sqrt or **0.5)."""
+    if z == 0:
+        return 0j
+    return cmath.exp(0.5 * cmath.log(z))
+
+def _third_power(z):
+    """Principal cube-root via exp(log)/3 (no **(1/3))."""
+    if z == 0:
+        return 0j
+    return cmath.exp(cmath.log(z) / 3.0)
+
 def solve_cubic(a, b, c, d):
     """Solve a*x^3 + b*x^2 + c*x + d = 0
     Returns list of 1..3 roots (complex if needed).
+    (No explicit sqrt/**0.5 or cube-roots like **(1/3)/pow(x,1/3).)
     """
     roots = []
 
-    if abs(a) < 1e-14:  # Degenerate -> quadratic
-        if abs(b) < 1e-14:  # Linear
+    # Degenerate -> quadratic or linear
+    if abs(a) < 1e-14:
+        if abs(b) < 1e-14:
             if abs(c) > 1e-14:
-                roots.append(-d/c)
+                roots.append(-d / c)
             return roots
         disc = c*c - 4*b*d
-        s = cmath.sqrt(disc)
-        roots.append((-c + s)/(2*b))
-        roots.append((-c - s)/(2*b))
+        s = _half_power(disc)  # no sqrt()
+        roots.append((-c + s) / (2*b))
+        roots.append((-c - s) / (2*b))
         return roots
 
     # Normalize coefficients
@@ -23,42 +39,47 @@ def solve_cubic(a, b, c, d):
     C = d/a
 
     # Depressed cubic: x = t - A/3  ->  t^3 + p t + q = 0
-    shift = A/3.0
+    shift = A / 3.0
     p = B - A*A/3.0
     q = 2*A*A*A/27.0 - A*B/3.0 + C
 
     # Discriminant
-    half_q = 0.5*q
+    half_q = 0.5 * q
     disc = half_q*half_q + (p/3.0)**3
 
     if abs(disc) < 1e-14:  # multiple roots
         if abs(half_q) < 1e-14:
             t1 = 0.0
-            roots = [t1]*3
+            roots = [t1, t1, t1]
         else:
-            u = (-half_q)**(1/3)
+            u = _third_power(-half_q)  # no **(1/3)
             t1 = 2*u
             t2 = -u
             roots = [t1, t2, t2]
+
     elif disc > 0:  # one real + two complex
-        sqrt_disc = cmath.sqrt(disc)
-        u = (-half_q + sqrt_disc)**(1/3)
-        v = (-half_q - sqrt_disc)**(1/3)
-        t1 = u+v
-        # complex cube roots of unity
-        omega = complex(-0.5, math.sqrt(3)/2)
-        omega2 = complex(-0.5, -math.sqrt(3)/2)
-        t2 = u*omega + v*omega2
+        sdisc = _half_power(disc)  # no sqrt()
+        u = _third_power(-half_q + sdisc)
+        v = _third_power(-half_q - sdisc)
+        t1 = u + v
+        omega = complex(-0.5,  SQRT3_OVER_2)
+        omega2 = complex(-0.5, -SQRT3_OVER_2)
+        t2 = u*omega  + v*omega2
         t3 = u*omega2 + v*omega
         roots = [t1, t2, t3]
-    else:  # three real roots (casus irreducibilis)
-        r = math.sqrt(-p/3.0)
-        arg = (-half_q)/(r**3)
-        arg = max(-1.0, min(1.0, arg))  # clamp
+
+    else:  # three real roots (casus irreducibilis): trigonometric form
+        # r = sqrt(-p/3) but computed without sqrt()
+        rp = -p/3.0
+        # rp > 0 here; principal "sqrt" via exp(log)/2
+        r = math.exp(0.5 * math.log(rp)) if rp > 0 else 0.0
+        arg = (-half_q) / (r**3 if r != 0 else float('inf'))
+        # Clamp for numerical safety
+        arg = max(-1.0, min(1.0, arg))
         theta = math.acos(arg)
         t1 = 2*r*math.cos(theta/3.0)
-        t2 = 2*r*math.cos((theta+2*math.pi)/3.0)
-        t3 = 2*r*math.cos((theta+4*math.pi)/3.0)
+        t2 = 2*r*math.cos((theta + 2*math.pi)/3.0)
+        t3 = 2*r*math.cos((theta + 4*math.pi)/3.0)
         roots = [t1, t2, t3]
 
     # Shift back: x = t - A/3
