@@ -70,21 +70,13 @@ def solve_cubic(a, b, c, d):
 
     else:  # three real roots (casus irreducibilis): trigonometric form
         # r = sqrt(-p/3) but computed without sqrt()
-        # r = sqrt(-p/3) > 0 ideally
-        rp = -p / 3.0
-        if rp <= 0:
-            rp = max(rp, 1e-30)  # tiny nudge for round-off
-        r = math.exp(0.5 * math.log(rp))
-        r3 = r * r * r
+        rp = -p/3.0
 
-        if r3 <= 1e-300:  # ultra-defensive; should not happen for Δ<0
-            arg = 1.0 if q.real >= 0 else -1.0
-        else:
-            arg = q.real / (2.0 * r3)
-
-        # Clamp to domain
-        if arg > 1.0: arg = 1.0
-        if arg < -1.0: arg = -1.0
+        # rp > 0 here; principal "sqrt" via exp(log)/2
+        r = math.exp(0.5 * math.log(rp)) if rp > 0 else 0.0
+        arg = (-half_q) / (r**3 if r != 0 else float('inf'))
+        # Clamp for numerical safety
+        arg = max(-1.0, min(1.0, arg))
         theta = math.acos(arg)
         t1 = 2*r*math.cos(theta/3.0)
         t2 = 2*r*math.cos((theta + 2*math.pi)/3.0)
