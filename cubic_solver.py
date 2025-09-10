@@ -83,7 +83,7 @@ def solve_cubic(a, b, c, d):
             # fallback (shouldn't happen for Δ<0)
             roots = [0.0, 0.0, 0.0]
         else:
-            arg = q.real / (2.0 * r3) if r3 != 0.0 else 1.0
+            arg = q / (2.0 * r3)
             # Clamp to [-1, 1] for numerical safety
             if arg > 1.0: arg = 1.0
             if arg < -1.0: arg = -1.0
