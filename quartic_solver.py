@@ -2,6 +2,13 @@ import math, cmath
 
 SQRT3_OVER_2 = 0.8660254037844386467637231707529361834714026269051903140279034897  # sqrt(3)/2
 
+def _real_cuberoot(x: float) -> float:
+    # real cube root for real x, no radicals:
+    if x == 0.0:
+        return 0.0
+    s = 1.0 if x > 0.0 else -1.0
+    return s * math.exp(math.log(abs(x)) / 3.0)
+
 def _is_close(a, b, tol=1e-12):
     return abs(a - b) <= tol
 
@@ -42,14 +49,20 @@ def solve_cubic(a, b, c, d):
     q = 2*A*A*A/27.0 - A*B/3.0 + C
 
     half_q = 0.5*q
-    disc = half_q*half_q + (p/3.0)**3
+    disc = half_q * half_q + (p / 3.0) ** 3
 
-    if abs(disc) < 1e-14:
-        if abs(half_q) < 1e-14:
+    eps = 1e-14
+    if abs(disc) < eps:
+        disc=0.0  # multiple roots
+        if abs(half_q) < eps:
+            # t^3 + p t = 0  => triple root at t=0
             ts = [0.0, 0.0, 0.0]
         else:
-            u = _third_power(-half_q)
-            ts = [2*u, -u, -u]
+            # Use REAL cube root here
+            u = _real_cuberoot(-(q / 2.0).real)
+            t1 = 2.0 * u
+            t2 = -u
+            ts = [t1, t2, t2]
     elif disc > 0:
         # One real, two complex: Cardano via exp(log)/3 (no **(1/3))
         sdisc = _half_power(disc)
@@ -81,7 +94,9 @@ def solve_cubic(a, b, c, d):
         t3 = 2 * r * math.cos((theta + 4 * math.pi) / 3.0)
         ts = [t1, t2, t3]
 
-    return [t - shift for t in ts]
+    xs = [t - shift for t in ts]
+    roots = [x.real if isinstance(x, complex) and abs(x.imag) < 1e-12 else x for x in xs]
+    return roots
 
 
 def solve_quartic(a, b, c, d, e):
@@ -127,9 +142,11 @@ def solve_quartic(a, b, c, d, e):
     m_roots = solve_cubic(1.0, cb, cc, cd)
 
     # Choose m (prefer real) with 2m - p >= 0
+    # Choose m (prefer real) with 2m - p >= 0
     m = None
+    p_real = p.real if isinstance(p, complex) else p
     for mr in m_roots:
-        if abs(mr.imag) <= 1e-10 and (2.0*mr.real - p) >= -1e-10:
+        if abs(mr.imag) <= 1e-10 and (2.0 * mr.real - p_real) >= -1e-10:
             m = mr.real
             break
     if m is None:
@@ -155,7 +172,7 @@ def solve_quartic(a, b, c, d, e):
 
     roots = [y1 - alpha, y2 - alpha, y3 - alpha, y4 - alpha]
     # Sample return statement
-    return roots
+    return [z.real if isinstance(z, complex) and abs(z.imag) < 1e-12 else z for z in roots]
 
 
 def main():
