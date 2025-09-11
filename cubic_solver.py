@@ -89,7 +89,8 @@ def solve_cubic(a, b, c, d):
         roots = [t1, t2, t3]
 
     # Shift back: x = t - A/3
-    return [t - shift for t in roots]
+    res = [t - shift for t in roots]
+    return [z.real if isinstance(z, complex) and abs(z.imag) < 1e-12 else z for z in res]
 
 
 def main():
