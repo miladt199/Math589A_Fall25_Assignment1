@@ -81,7 +81,7 @@ def solve_cubic(a, b, c, d):
         # Clamp to [-1, 1] for numerical safety
         if arg > 1.0: arg = 1.0
         if arg < -1.0: arg = -1.0
-
+        
         theta = math.acos(arg)
         t1 = 2*r*math.cos(theta/3.0)
         t2 = 2*r*math.cos((theta + 2*math.pi)/3.0)
