@@ -1,96 +1,124 @@
-import math, cmath
 
-SQRT3_OVER_2 = 0.8660254037844386467637231707529361834714026269051903140279034897  # sqrt(3)/2
+from __future__ import annotations
+import math
+import cmath
+from typing import List
 
-def _half_power(z):
-    """Principal square-root via exp(log)/2 (no sqrt or **0.5)."""
-    if z == 0:
-        return 0j
-    return cmath.exp(0.5 * cmath.log(z))
+_TOL = 1e-12
 
-def _third_power(z):
-    """Principal cube-root via exp(log)/3 (no **(1/3))."""
-    if z == 0:
-        return 0j
-    return cmath.exp(cmath.log(z) / 3.0)
+def _is_close(a: float, b: float = 0.0, tol: float = _TOL) -> bool:
+    return abs(a - b) <= tol
 
-def solve_cubic(a, b, c, d):
-    """Solve a*x^3 + b*x^2 + c*x + d = 0
-    Returns list of 1..3 roots (complex if needed).
-    (No explicit sqrt/**0.5 or cube-roots like **(1/3)/pow(x,1/3).)
+def _cleanup(z: complex, tol: float = 1e-10) -> complex:
+    zr, zi = z.real, z.imag
+    if abs(zi) < tol:
+        zi = 0.0
+    return complex(0.0 if abs(zr) < tol else zr, zi)
+
+def csqrt(z) -> complex:
     """
-    roots = []
+    Principal square root without using sqrt() or **0.5.
+    Uses exp(0.5*log(z)). Works for real/complex. csqrt(0)=0.
+    """
+    zc = complex(z)
+    if zc == 0:
+        return 0j
+    return cmath.exp(0.5 * cmath.log(zc))
 
-    # Degenerate -> quadratic or linear
-    if abs(a) < 1e-14:
-        if abs(b) < 1e-14:
-            if abs(c) > 1e-14:
-                roots.append(-d / c)
-            return roots
-        disc = c*c - 4*b*d
-        s = _half_power(disc)  # no sqrt()
-        roots.append((-c + s) / (2*b))
-        roots.append((-c - s) / (2*b))
-        return roots
+def rsqrt_pos(x: float) -> float:
+    """
+    Real sqrt for strictly positive x without sqrt().
+    Uses exp(0.5*log(x)). Assumes x>0.
+    """
+    return math.exp(0.5 * math.log(x))
 
-    # Normalize coefficients
-    A = b/a
-    B = c/a
-    C = d/a
+def _real_cuberoot(x: float) -> float:
+    # exact real cube root with sign (ok to use 1/3 power)
+    return math.copysign(abs(x) ** (1.0/3.0), x)
 
-    # Depressed cubic: x = t - A/3  ->  t^3 + p t + q = 0
-    shift = A / 3.0
-    p = B - A*A/3.0
-    q = 2*A*A*A/27.0 - A*B/3.0 + C
+# Precompute constants without sqrt()
+SQRT3 = (csqrt(3.0)).real  # == √3
+
+def solve_cubic(a: float, b: float, c: float, d: float) -> List[complex]:
+    """
+    Solve a x^3 + b x^2 + c x + d = 0 using trig/hyperbolic substitutions.
+    Returns three complex roots (with multiplicities).
+    """
+    if _is_close(a, 0.0):
+        # Degenerates to quadratic / linear
+        if _is_close(b, 0.0):
+            if _is_close(c, 0.0):
+                return []  # constant
+            return [_cleanup(-d / c)]
+        # Quadratic: b x^2 + c x + d = 0
+        D = c*c - 4.0*b*d
+        sqrtD = csqrt(D)
+        r1 = (-c + sqrtD) / (2.0*b)
+        r2 = (-c - sqrtD) / (2.0*b)
+        return [_cleanup(r1), _cleanup(r2)]
+
+    # Normalize to monic
+    A = b / a
+    B = c / a
+    C = d / a
+
+    # Depressed cubic: x = t - A/3 -> t^3 + p t + q = 0
+    p = B - (A*A)/3.0
+    q = (2.0*A*A*A)/27.0 - (A*B)/3.0 + C
 
     # Discriminant
-    half_q = 0.5 * q
-    disc = half_q*half_q + (p/3.0)**3
+    Delta = (q*q)/4.0 + (p*p*p)/27.0
 
-    if abs(disc) < 1e-14:  # multiple roots
-        if abs(half_q) < 1e-14:
-            t1 = 0.0
-            roots = [t1, t1, t1]
+    roots_t: List[complex] = []
+
+    if _is_close(p, 0.0) and _is_close(q, 0.0):
+        roots_t = [0.0, 0.0, 0.0]
+    elif Delta < -_TOL:
+        # Three real roots (Casus irreducibilis): trigonometric form
+        # r = 2 * sqrt(-p/3)
+        r = 2.0 * rsqrt_pos(-p/3.0)
+        # arg = (3q/(2p))*sqrt(-3/p)
+        arg = (3.0*q/(2.0*p)) * rsqrt_pos(-3.0/p)
+        # clamp
+        arg = max(-1.0, min(1.0, arg))
+        phi = math.acos(arg)
+        roots_t = [r * math.cos((phi - 2.0*math.pi*k)/3.0) for k in (0,1,2)]
+    else:
+        # One real root; use hyperbolic substitution (no Cardano radicals)
+        if p > 0.0:
+            # t = 2*sqrt(p/3) * sinh(u),  sinh(3u) = -(3√3 q)/(2 p^{3/2})
+            denom = 2.0 * (p * rsqrt_pos(p))  # p^{3/2} without sqrt
+            rhs = -(3.0*SQRT3*q) / denom
+            u = (1.0/3.0) * math.asinh(rhs)
+            t0 = 2.0 * rsqrt_pos(p/3.0) * math.sinh(u)
+        elif p < 0.0:
+            # t = sgn(-q)*2*sqrt(-p/3)*cosh(u),  cosh(3u) = (3√3|q|)/(2 |p|^{3/2})
+            pm = -p
+            denom = 2.0 * (pm * rsqrt_pos(pm))  # |p|^{3/2}
+            rhs = (3.0*SQRT3*abs(q)) / denom
+            u = (1.0/3.0) * math.acosh(rhs)
+            t0 = math.copysign(1.0, -q) * 2.0 * rsqrt_pos(pm/3.0) * math.cosh(u)
         else:
-            u = _third_power(-half_q)  # no **(1/3)
-            t1 = 2*u
-            t2 = -u
-            roots = [t1, t2, t2]
+            # p == 0 -> t^3 + q = 0
+            t0 = -_real_cuberoot(q)
 
-    elif disc > 0:  # one real + two complex
-        sdisc = _half_power(disc)  # no sqrt()
-        u = _third_power(-half_q + sdisc)
-        v = _third_power(-half_q - sdisc)
-        t1 = u + v
-        omega = complex(-0.5,  SQRT3_OVER_2)
-        omega2 = complex(-0.5, -SQRT3_OVER_2)
-        t2 = u*omega  + v*omega2
-        t3 = u*omega2 + v*omega
-        roots = [t1, t2, t3]
+        # Quadratic factor for remaining two roots
+        A2 = 1.0
+        B2 = t0
+        C2 = t0*t0 + p
+        Dq = B2*B2 - 4.0*A2*C2
+        sqrtDq = csqrt(Dq)
+        roots_t = [t0, (-B2 + sqrtDq)/2.0, (-B2 - sqrtDq)/2.0]
 
-    else:  # three real roots (casus irreducibilis): trigonometric form
-        # r = sqrt(-p/3) but computed without sqrt()
-        rp = -p / 3.0
-        if rp <= 0:
-            rp = max(rp, 1e-30)
-        r = math.exp(0.5 * math.log(rp))
-        r3 = r * r * r
-
-        # Correct identity: cos(3θ) = q / (2 r^3)
-        arg = q / (2.0 * r3) if r3 != 0.0 else 1.0
-        # Clamp to [-1, 1] for numerical safety
-        if arg > 1.0: arg = 1.0
-        if arg < -1.0: arg = -1.0
-        
-        theta = math.acos(arg)
-        t1 = 2*r*math.cos(theta/3.0)
-        t2 = 2*r*math.cos((theta + 2*math.pi)/3.0)
-        t3 = 2*r*math.cos((theta + 4*math.pi)/3.0)
-        roots = [t1, t2, t3]
-
-    # Shift back: x = t - A/3
-    res = [t - shift for t in roots]
-    return [z.real if isinstance(z, complex) and abs(z.imag) < 1e-12 else z for z in res]
+    # Undo shift
+    shift = A/3.0
+    roots = [_cleanup(complex(t) - shift) for t in roots_t]
+    # Always return 3 items
+    if len(roots) == 2:
+        roots.append(roots[-1])
+    if len(roots) == 1:
+        roots += [roots[0], roots[0]]
+    return roots
 
 
 def main():
