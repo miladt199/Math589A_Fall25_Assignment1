@@ -1,16 +1,11 @@
 
+
 from __future__ import annotations
 import cmath
 from typing import List
 from cubic_solver import solve_cubic, csqrt, _cleanup, _is_close
 
-def _sorted_roots(roots):
-    return sorted(
-        (_cleanup(complex(r)) for r in roots),
-        key=lambda z: (round(z.real, 12), round(z.imag, 12))
-    )
-
-def _solve_biquadratic(P: float, R: float):
+def _solve_biquadratic(P: float, R: float) -> List[complex]:
     # u^4 + P u^2 + R = 0 -> y^2 + P y + R = 0 with y = u^2
     Dy = P*P - 4.0*R
     sy = csqrt(Dy)
@@ -24,18 +19,14 @@ def _solve_biquadratic(P: float, R: float):
 
 def solve_quartic(a: float, b: float, c: float, d: float, e: float) -> List[complex]:
     """
-    Solve a x^4 + b x^3 + c x^2 + d x + e = 0 (Ferrari).
-    Returns exactly four complex roots (with multiplicities), sorted.
+    Solve a x^4 + b x^3 + c x^2 + d x + e = 0 using Ferrari.
+    Returns four complex roots (with multiplicities).
     """
-    # Degenerate: fall back to cubic, then pad to 4 to keep interface stable
+    # Degenerate cases
     if _is_close(a, 0.0):
-        r3 = solve_cubic(b, c, d, e)
-        roots = list(r3)
-        while len(roots) < 4:
-            roots.append(roots[-1] if roots else 0j)
-        return _sorted_roots(roots)
+        return [_cleanup(z) for z in solve_cubic(b, c, d, e)]
 
-    # Normalize to monic: x^4 + A x^3 + B x^2 + C x + D = 0
+    # Normalize (monic)
     A = b / a
     B = c / a
     C = d / a
@@ -52,7 +43,7 @@ def solve_quartic(a: float, b: float, c: float, d: float, e: float) -> List[comp
         # Resolvent cubic: 2y^3 - P y^2 - 2 R y + (P R - Q^2/4) = 0
         y_roots = solve_cubic(2.0, -P, -2.0*R, (P*R - (Q*Q)/4.0))
 
-        # Choose a good y (prefer real with 2y - P > 0 to stabilize S)
+        # Choose a good y (prefer real with 2y-P > 0 to keep S nonzero)
         chosen_y = None
         for y in y_roots:
             if abs(y.imag) < 1e-10 and (2.0*y.real - P) > 1e-14:
@@ -64,6 +55,8 @@ def solve_quartic(a: float, b: float, c: float, d: float, e: float) -> List[comp
 
         S = csqrt(2.0*chosen_y - P)
         term1 = -2.0*chosen_y - P
+
+        # Beware S ~ 0; chosen_y selection tries to avoid that.
         term_plus  = csqrt(term1 + 2.0*Q / S)
         term_minus = csqrt(term1 - 2.0*Q / S)
 
@@ -76,12 +69,11 @@ def solve_quartic(a: float, b: float, c: float, d: float, e: float) -> List[comp
 
     # Undo the shift
     shift = A / 4.0
-    x_roots = [u - shift for u in u_roots]
-
-    # Ensure exactly four complex outputs, sorted
+    x_roots = [_cleanup(u - shift) for u in u_roots]
+    # Ensure four outputs
     while len(x_roots) < 4:
-        x_roots.append(x_roots[-1] if x_roots else 0j)
-    return _sorted_roots(x_roots)
+        x_roots.append(x_roots[-1])
+    return x_roots
 
 
 def main():
